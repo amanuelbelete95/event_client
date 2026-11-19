@@ -1,4 +1,4 @@
-import 'package:event_client/features/auth/presentation/LoginScreen.dart';
+import 'package:event_client/features/auth/presentation/screens/LoginScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
