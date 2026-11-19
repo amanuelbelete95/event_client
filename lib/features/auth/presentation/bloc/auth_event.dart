@@ -30,3 +30,5 @@ class OnRegisterRequested extends AuthEvent {
     required this.password,
   });
 }
+
+class OnLogoutPressed extends AuthEvent {}
