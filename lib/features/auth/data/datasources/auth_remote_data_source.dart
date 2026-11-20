@@ -1,0 +1,70 @@
+import 'package:dio/dio.dart';
+import 'package:event_client/core/error/exceptions.dart';
+import 'package:event_client/features/auth/data/models/auth_models.dart';
+
+abstract class AuthRemoteDataSource {
+  Future<UserModel> login({required String email, required String password});
+
+  Future<UserModel> register({
+    required String name,
+    required String email,
+    required String password,
+  });
+
+  Future<void> logout();
+}
+
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
+  final Dio _dio;
+
+  AuthRemoteDataSourceImpl(this._dio);
+
+  String _extractErrorMessage(DioException e, {required String fallback}) {
+    final responseData = e.response?.data;
+    if (responseData is Map<String, dynamic>) {
+      final serverMessage = responseData['message'] ?? responseData['error'];
+      if (serverMessage is String && serverMessage.isNotEmpty) {
+        return serverMessage;
+      }
+    }
+    return e.message ?? fallback;
+  }
+
+  @override
+  Future<UserModel> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/auth/login',
+        data: {'email': email, 'password': password},
+      );
+
+      return UserModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw ServerException(_extractErrorMessage(e, fallback: 'Login Failed'));
+    }
+  }
+
+  @override
+  Future<UserModel> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await _dio.post(
+        '/auth/register',
+        data: {'name': name, 'email': email, 'password': password},
+      );
+
+      return UserModel.fromJson(_normalizeResponseMap(response.data));
+    } on DioException catch (e) {
+      throw Exception(_extractErrorMessage(e, fallback: 'Registration failed'));
+    }
+  }
+
+  @override
+  Future<void> logout() async {}
+}

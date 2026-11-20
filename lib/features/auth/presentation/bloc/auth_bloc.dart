@@ -1,4 +1,5 @@
-import 'package:event_client/features/auth/domain/repositories/AuthRepository.dart';
+import 'package:event_client/features/auth/domain/entities/user_entity.dart';
+import 'package:event_client/features/auth/domain/repositories/auth_repository.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_event.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,7 +13,10 @@ enum AuthenticationStatus {
   unknown,
 }
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(AuthInitial()) {
+
+  final AuthRepository _authRepository;
+
+  AuthBloc(this._authRepository) : super(AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
     on<RegisterRequested>(_onRegisterRequested);
     on<LogoutPressed>(_onLogoutPressed);
@@ -22,16 +26,13 @@ Future<void> _onLoginRequested(
   LoginRequested event,
   Emitter<AuthState> emit,
 ) async {
-  emit(AuthLoading()); // 1. Show spinner in UI
+  emit(AuthLoading()); 
   try {
-    // 2. Perform authentication (e.g. call API with event.email and event.password)
-    // await authRepository.login(email: event.email, password: event.password);
-
-  final user = await _auth
-    
-    emit(Authenticated()); // 3. Notify UI of success
+  final UserEntity user = await _authRepository.login(email: event.email, password: event.password);
+  emit(Authenticated(user: user)); 
   } catch (e) {
-    emit(AuthFailure()); // 4. Notify UI of error
+    final message = e.toString();
+    emit(AuthFailure(message: message )); 
   }
 }
 
