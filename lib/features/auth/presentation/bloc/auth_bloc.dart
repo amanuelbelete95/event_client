@@ -1,3 +1,4 @@
+import 'package:event_client/features/auth/domain/repositories/AuthRepository.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_event.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,19 +13,21 @@ enum AuthenticationStatus {
 }
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitial()) {
-    on<OnLoginRequested>(_onLoginRequested);
-    on<OnRegisterRequested>(_onRegisterRequested);
-    on<OnLogoutPressed>(_onLogoutPressed);
+    on<LoginRequested>(_onLoginRequested);
+    on<RegisterRequested>(_onRegisterRequested);
+    on<LogoutPressed>(_onLogoutPressed);
   }
   
 Future<void> _onLoginRequested(
-  OnLoginRequested event,
+  LoginRequested event,
   Emitter<AuthState> emit,
 ) async {
   emit(AuthLoading()); // 1. Show spinner in UI
   try {
     // 2. Perform authentication (e.g. call API with event.email and event.password)
     // await authRepository.login(email: event.email, password: event.password);
+
+  final user = await _auth
     
     emit(Authenticated()); // 3. Notify UI of success
   } catch (e) {
@@ -33,7 +36,7 @@ Future<void> _onLoginRequested(
 }
 
   Future<void> _onRegisterRequested(
-    OnRegisterRequested event,
+    RegisterRequested event,
     Emitter<AuthState> emit,
   ) async {
   emit(AuthLoading()); // 1. Show spinner in UI
@@ -48,7 +51,7 @@ Future<void> _onLoginRequested(
 }
 
   Future<void> _onLogoutPressed(
-    OnLogoutPressed event,
+    LogoutPressed event,
     Emitter<AuthState> emit,
   ) {
     return emit.onEach(stream, onData: onData)

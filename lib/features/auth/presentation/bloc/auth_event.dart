@@ -12,23 +12,23 @@
 
 class AuthEvent {}
 
-class OnLoginRequested extends AuthEvent {
+class LoginRequested extends AuthEvent {
   final String email;
   final String password;
 
-  OnLoginRequested({required this.email, required this.password});
+  LoginRequested({required this.email, required this.password});
 }
 
-class OnRegisterRequested extends AuthEvent {
+class RegisterRequested extends AuthEvent {
   final String name;
   final String email;
   final String password;
 
-  OnRegisterRequested({
+  RegisterRequested({
     required this.name,
     required this.email,
     required this.password,
   });
 }
 
-class OnLogoutPressed extends AuthEvent {}
+class LogoutPressed extends AuthEvent {}
