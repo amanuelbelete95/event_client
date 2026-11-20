@@ -152,16 +152,25 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     builder: (context, state) {
                       if (state is AuthLoading) {
-                        return const CircularProgressIndicator();
+                        return const Center(child: CircularProgressIndicator());
                       }
                       return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
                         onPressed: () {
-                          context.read<AuthBloc>().add(
-                            LoginRequested(
-                              username: _emailController.text,
-                              password: _passwordController.text,
-                            ),
-                          );
+                          if (_formKey.currentState?.validate() ?? false) {
+                            context.read<AuthBloc>().add(
+                              LoginRequested(
+                                username: _emailController.text.trim(),
+                                password: _passwordController.text,
+                              ),
+                              
+                            );
+                          }
                         },
                         child: const Text('Login'),
                       );
