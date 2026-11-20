@@ -1,5 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:event_client/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:event_client/features/auth/presentation/bloc/auth_event.dart';
+import 'package:event_client/features/auth/presentation/bloc/auth_state.dart';
 import 'package:event_client/features/auth/presentation/screens/RegisterScreen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
+
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -23,43 +29,24 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
-    // Calling validate() on the FormState
-    if (_formKey.currentState?.validate() ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Logging in...'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Proceed with authentication logic (e.g. auth repository / service call)
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please correct the errors in the form'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Log In'),
-      ),
+      appBar: AppBar(title: const Text('Log In')),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 24.0,
+              vertical: 16.0,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
+                children: <Widget>[
                   Icon(
                     Icons.lock_outline_rounded,
                     size: 80,
@@ -110,7 +97,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-
                   // Password Field
                   TextFormField(
                     controller: _passwordController,
@@ -147,21 +133,38 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-
                   // Login Button
-                  ElevatedButton(
-                    onPressed: _handleLogin,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+
+                  BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is Authenticated) {
+                        // Navigator.pushReplacementNamed(context, '/home');
+                        AlertDialog()
+                      } else if (state is AuthFailure) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(state.message)));
+                      }
+                    },
+
+                    builder: (context, state) {
+                      if (state is AuthLoading) {
+                        return const CircularProgressIndicator();
+                      }
+                      return ElevatedButton(
+                        onPressed: () {
+                          context.read<AuthBloc>().add(
+                            LoginRequested(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            ),
+                          );
+                        },
+                        child: const Text('Login'),
+                      );
+                    },
                   ),
+
                   const SizedBox(height: 16),
 
                   // Navigation to Register Screen
