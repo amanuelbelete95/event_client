@@ -32,13 +32,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> login({
-    required String email,
+    required String username,
     required String password,
   }) async {
     try {
       final response = await _dio.post(
         '/auth/login',
-        data: {'email': email, 'password': password},
+        data: {'username': username, 'password': password},
       );
 
       return UserModel.fromJson(response.data);
@@ -50,13 +50,13 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> register({
     required String name,
-    required String email,
+    required String username,
     required String password,
   }) async {
     try {
       final response = await _dio.post(
         '/auth/register',
-        data: {'name': name, 'email': email, 'password': password},
+        data: {'name': name, 'username': username, 'password': password},
       );
 
       return UserModel.fromJson(_normalizeResponseMap(response.data));

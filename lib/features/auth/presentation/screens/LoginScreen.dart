@@ -1,6 +1,7 @@
 import 'package:event_client/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_event.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_state.dart';
+import 'package:event_client/features/auth/presentation/pages/welcomepage.dart';
 import 'package:event_client/features/auth/presentation/screens/RegisterScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,8 +20,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
-
-
 
   @override
   void dispose() {
@@ -138,8 +137,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   BlocConsumer<AuthBloc, AuthState>(
                     listener: (context, state) {
                       if (state is Authenticated) {
-                        // Navigator.pushReplacementNamed(context, '/home');
-                        AlertDialog()
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MyHome(),
+                          ),
+                        );
                       } else if (state is AuthFailure) {
                         ScaffoldMessenger.of(
                           context,
@@ -155,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           context.read<AuthBloc>().add(
                             LoginRequested(
-                              email: _emailController.text,
+                              username: _emailController.text,
                               password: _passwordController.text,
                             ),
                           );
