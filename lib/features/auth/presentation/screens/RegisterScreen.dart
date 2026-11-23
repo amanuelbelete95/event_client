@@ -46,8 +46,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           confirmPassword: _confirmPasswordController.text,
         ),
       );
-      // Navigate back to login screen
-      Navigator.pop(context);
     }
   }
 
@@ -97,7 +95,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     controller: _firstNameController,
                     textInputAction: TextInputAction.next,
                     decoration: InputDecoration(
-                      labelText: '',
+                      labelText: 'First Name',
                       hintText: 'Enter your first name',
                       prefixIcon: const Icon(Icons.person_outline),
                       border: OutlineInputBorder(
@@ -241,24 +239,54 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                   ),
                   const SizedBox(height: 24),
-                  BlocConsumer(
+                  BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is Authenticated) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Account created successfully!'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const MyHome(),
+                          ),
+                        );
+                      } else if (state is AuthFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.message),
+                            backgroundColor: Colors.redAccent,
+                          ),
+                        );
+                      }
+                    },
                     builder: (context, state) => Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         ElevatedButton(
-                          onPressed: _handleRegister,
+                          onPressed: state is AuthLoading ? null : _handleRegister,
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
                           ),
-                          child: const Text(
-                            'Create Account',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: state is AuthLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Text(
+                                  'Create Account',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                         const SizedBox(height: 16),
                         Row(
@@ -275,16 +303,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ],
                     ),
-                    listener: (context, state) {
-                      if (state is Authenticated) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MyHome(),
-                          ),
-                        );
-                      }
-                    },
                   ),
                 ],
               ),
