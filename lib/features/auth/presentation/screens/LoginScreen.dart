@@ -166,7 +166,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           }
                         },
-                        child: const Text('Login'),
+                        child: state is AuthLoading
+                            ? const Text("Loading ...")
+                            : const Text("Login"),
                       );
                     },
                   ),

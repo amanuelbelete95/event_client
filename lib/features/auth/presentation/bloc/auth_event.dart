@@ -10,25 +10,31 @@
 
 //
 
-class AuthEvent {}
-
-class LoginRequested extends AuthEvent {
+class AuthEvent {
   final String username;
   final String password;
 
-  LoginRequested({required this.username, required this.password});
+  AuthEvent({required this.username, required this.password});
+}
+
+class LoginRequested extends AuthEvent {
+  LoginRequested({required super.username, required super.password});
 }
 
 class RegisterRequested extends AuthEvent {
-  final String name;
-  final String username;
-  final String password;
+  final String firstname;
+  final String lastname;
+  final String confirmPassword;
 
   RegisterRequested({
-    required this.name,
-    required this.username,
-    required this.password,
+    required super.username,
+    required super.password,
+    required this.firstname,
+    required this.lastname,
+    required this.confirmPassword,
   });
 }
 
-class LogoutPressed extends AuthEvent {}
+class LogoutPressed extends AuthEvent {
+  LogoutPressed({required super.username, required super.password});
+}

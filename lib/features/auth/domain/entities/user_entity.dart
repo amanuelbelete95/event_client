@@ -1,8 +1,9 @@
 class UserEntity {
   final String id;
   final String username;
-  final String name;
+  final String firstname;
+  final String lastname;
   final String role;
 
-  const UserEntity({required this.id, required this.username, required this.name, required this.role});
+  const UserEntity({required this.id, required this.username, required this.firstname, required this.lastname, required this.role});
 }
