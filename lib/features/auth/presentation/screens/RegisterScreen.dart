@@ -1,3 +1,4 @@
+import 'package:event_client/features/auth/domain/entities/user_entity.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_event.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_state.dart';
@@ -242,9 +243,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   BlocConsumer<AuthBloc, AuthState>(
                     listener: (context, state) {
                       if (state is Authenticated) {
+                        final UserEntity currentUser = state.user;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Account created successfully!'),
+                          SnackBar(
+                            content: Text('Hey, ${currentUser.firstname}, you have created account successfully!'),
                             backgroundColor: Colors.green,
                           ),
                         );
