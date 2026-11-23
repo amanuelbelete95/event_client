@@ -68,7 +68,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }) async {
     try {
       final response = await _dio.post(
-        '/auth/register',
+        '/api/register',
         data: {'name': name, 'username': username, 'password': password},
       );
 

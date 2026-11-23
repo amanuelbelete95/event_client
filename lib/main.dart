@@ -12,7 +12,7 @@ void main() {
 
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://localhost:3000'
+      baseUrl: 'http://localhost:4000'
   ));
   final remoteDataSource = AuthRemoteDataSourceImpl(dio);
   final authRepository = AuthRepositoryImpl(remoteDataSource);
