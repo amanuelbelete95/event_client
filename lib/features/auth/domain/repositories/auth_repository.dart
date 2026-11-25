@@ -9,9 +9,11 @@ abstract class AuthRepository {
 
   /// Registers a new user account
   Future<UserEntity> register({
-    required String name,
+    required String firstname,
+    required String lastname,
     required String username,
     required String password,
+    required String confirmPassword,
   });
 
   /// Logs out the current user

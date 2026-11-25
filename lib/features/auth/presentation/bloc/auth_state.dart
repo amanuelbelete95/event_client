@@ -10,7 +10,6 @@ class AuthInitial extends AuthState {}
 
 class Authenticated extends AuthState {
   final UserEntity user;
-
   Authenticated({required this.user});
 }
 

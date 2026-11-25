@@ -3,15 +3,14 @@ import 'package:event_client/core/error/exceptions.dart';
 import 'package:event_client/features/auth/data/models/auth_models.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<UserModel> login({
-    required String username,
-    required String password,
-  });
+  Future<UserModel> login({required String username, required String password});
 
   Future<UserModel> register({
-    required String name,
+    required String firstname,
+    required String lastname,
     required String username,
     required String password,
+    required String confirmPassword,
   });
 
   Future<void> logout();
@@ -62,19 +61,29 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> register({
-    required String name,
+    required String firstname,
+    required String lastname,
     required String username,
     required String password,
+    required String confirmPassword,
   }) async {
     try {
       final response = await _dio.post(
         '/api/register',
-        data: {'name': name, 'username': username, 'password': password},
+        data: {
+          'firstname': firstname,
+          'lastname': lastname,
+          'username': username,
+          'password': password,
+          'confirmPassword': confirmPassword,
+        },
       );
 
       return UserModel.fromJson(_normalizeResponseMap(response.data));
     } on DioException catch (e) {
-      throw ServerException(_extractErrorMessage(e, fallback: 'Registration failed'));
+      throw ServerException(
+        _extractErrorMessage(e, fallback: 'Registration failed'),
+      );
     }
   }
 

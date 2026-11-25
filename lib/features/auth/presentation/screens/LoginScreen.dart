@@ -1,3 +1,4 @@
+import 'package:event_client/features/auth/domain/entities/user_entity.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_event.dart';
 import 'package:event_client/features/auth/presentation/bloc/auth_state.dart';
@@ -131,6 +132,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   BlocConsumer<AuthBloc, AuthState>(
                     listener: (context, state) {
                       if (state is Authenticated) {
+                        final UserEntity currentUser = state.user;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Welcome back, ${currentUser.firstname}!',
+                            ),
+                          ),
+                        );
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -162,11 +171,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 username: _emailController.text.trim(),
                                 password: _passwordController.text,
                               ),
-                              
                             );
                           }
                         },
-                        child: const Text('Login'),
+                        child: state is AuthLoading
+                            ? const Text("Loading ...")
+                            : const Text("Login"),
                       );
                     },
                   ),
